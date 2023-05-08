@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-const WordLine = ({ handle, active, correct, isEnd }) => {
+const WordLine = ({ handle, active, correct, isEnd, randomW }) => {
   const [letter, setLetter] = useState([]);
 
   const handleKeyDown = (e) => {
     if (!isEnd) {
-      if (letter.length <= 4 && e.key !== "Enter" && e.key !== "Backspace") {
+      if (letter.length <= 4 && /^[a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ]{1}$/.test(e.key)) {
         const newLetter = [...letter, e.key];
         setLetter(newLetter);
       } else if (e.key === "Enter") {
-        if (letter.length === 5) handle(letter);
-        else alert("SLOWO NIE ISTNIEJE");
+        const joinedWord = letter.join("");
+        if (randomW.acceptableWords.includes(joinedWord)) {
+          handle(letter);
+        } else alert("SLOWO NIE ISTNIEJE");
       } else if (e.key === "Backspace") {
         const deleteLastLetter = [...letter.slice(0, letter.length - 1)];
         setLetter(deleteLastLetter);

@@ -1,6 +1,7 @@
 import "./App.css";
 import WordLine from "./components/WordLine";
-import { useState, useEffect, useRef } from "react";
+import RandomWord from "./components/RandomWord";
+import { useState } from "react";
 const App = () => {
   const [words, setWords] = useState([
     {
@@ -47,7 +48,7 @@ const App = () => {
     },
   ]);
   const [isEnd, setIsEnd] = useState(false);
-  const correctWord = "motyl";
+  const [randomW, setRandomW] = useState([]);
 
   const handleKeyUp = (e) => {
     if (!isEnd && e.key === "Enter") {
@@ -66,13 +67,14 @@ const App = () => {
           return word;
         });
         setWords(newWord);
-        if (correctWord === words[activeIndex].word) {
+        if (randomW.correctWord === words[activeIndex].word) {
           setIsEnd(true);
           alert("WYGRALES");
         }
         if (activeIndex === 5) {
           setIsEnd(true);
           alert("PRZEGRALES");
+          console.log(randomW.correctWord);
         }
       }
     }
@@ -90,15 +92,16 @@ const App = () => {
     setWords(newWord);
   };
 
-  const checkWord = (word) => {
+  const checkWord = () => {
     const activeIndex = words.findIndex(
       (element) => element.active === "withFocus"
     );
-    const splittedWord = [...correctWord.toLowerCase()];
     const correct = words[activeIndex].letters
-      .map((element) => (splittedWord.includes(element) ? element : null))
+      .map((element) =>
+        randomW.correctWord.includes(element) ? element : null
+      )
       .map((element, index) =>
-        element === splittedWord[index]
+        element === randomW.correctWord[index]
           ? "correct-same"
           : element
           ? "correct-medium"
@@ -118,12 +121,14 @@ const App = () => {
       correct={word.correct}
       handle={handleGetLetter}
       isEnd={isEnd}
+      randomW={randomW}
     />
   ));
 
   return (
     <div className="container" onKeyUp={handleKeyUp}>
       {gamePanel}
+      <RandomWord randomW={randomW} setRandomW={setRandomW} />
     </div>
   );
 };
